@@ -608,7 +608,14 @@ export function createMessageConnection(messageReader: MessageReader, messageWri
 
 	let timer: Disposable | undefined;
 	let messageQueue: MessageQueue = new LinkedMap<string, Message>();
-	let responsePromises: Map<string | number, ResponsePromise> = new Map();
+	let 
+	
+	
+	
+	
+	
+	
+	: Map<string | number, ResponsePromise> = new Map();
 	let knownCanceledRequests: Set<string | number> = new Set();
 	let requestTokens: Map<string | number, AbstractCancellationTokenSource> = new Map();
 
@@ -1431,11 +1438,13 @@ export function createMessageConnection(messageReader: MessageReader, messageWri
 
 				};
 				const rejectWithCleanup = (r: any) => {
+					r.stack = responsePromise!.stack
 					reject(r);
 					cancellationStrategy.sender.cleanup(id);
 					disposable?.dispose();
 				};
 				const responsePromise: ResponsePromise | null = { method: method, timerStart: Date.now(), resolve: resolveWithCleanup, reject: rejectWithCleanup };
+				Error.captureStackTrace(responsePromise)
 				try {
 					await messageWriter.write(requestMessage);
 					responsePromises.set(id, responsePromise);
